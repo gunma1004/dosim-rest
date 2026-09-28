@@ -57,7 +57,7 @@ html_content = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="naver-site-verification" content="새로운_네이버_인증코드" />
+<meta name="naver-site-verification" content="6f31c9396bb02b7a331c5b129d3929be9bdec35c" />
 
 <!-- 검색엔진 최적화(SEO) 타이틀 & 디스크립션 -->
 <title>{hub_page_title}</title>
