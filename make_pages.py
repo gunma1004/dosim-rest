@@ -396,7 +396,7 @@ for city, gu_dict in regions_data.items():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="naver-site-verification" content="새로운_네이버_인증코드" />
+<meta name="naver-site-verification" content="6f31c9396bb02b7a331c5b129d3929be9bdec35c" />
 <title>{gu_title}</title>
 <meta name="description" content="{gu_desc}">
 <meta name="robots" content="index, follow">
