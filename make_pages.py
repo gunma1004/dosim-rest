@@ -1,4 +1,254 @@
 import os
+import itertools
+
+# --- 60가지 타이틀 & 메타 디스크립션 패턴 (홈바디 30개 + 딥 아로마 30개) ---
+SEO_VARIATIONS = [
+    # [홈바디 출장마사지 스타일 (1~30)]
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장 마사지 스웨디시 제휴점 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 안내. 24시간 언제 어디서나 편안하게 만나는 홈바디 케어, 코스별 가격 및 검증된 제휴 샵 예약 정보 제공."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장 마사지 24시 프라이빗 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천. 내 공간에서 편안하게 즐기는 프리미엄 홈바디 관리와 실시간 예약 가능한 제휴 샵 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 힐링 스웨디시 안내 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문 제휴 정보. 지친 일상에 맞춘 프라이빗 홈바디 힐링 코스 및 24시간 간편 예약 상담."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장 마사지 추천 제휴 샵 모음 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 매장 정보. 믿을 수 있는 홈바디 전문 테라피스트 제휴 업체 리스트와 코스별 상세 요금 확인."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 1인 프라이빗 힐링 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 맞춤 상담. 프라이빗 홈바디 케어로 몸과 마음의 피로를 풀어주는 24시간 제휴 업체 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 프리미엄 제휴 코스 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 제휴 안내. 정성스러운 홈바디 관리와 합리적인 코스 요금, 빠른 방문 예약 정보를 확인하세요."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 24시간 실시간 예약 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 예약 가이드. 언제든 이용 가능한 홈바디 스웨디시 프로그램과 검증된 제휴 샵 실시간 연결."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 릴렉싱 케어 가이드 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천 리스트. 쾌적한 환경에서 즐기는 홈바디 릴렉싱 케어와 안심 제휴 업체의 특별한 코스 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 스웨디시 전문 제휴점 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 실시간 상담. 맞춤형 홈바디 테라피와 스웨디시 코스로 완벽한 휴식을 선사하는 공식 제휴 샵."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 방문 예약 가이드 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 업체 정보. 편안한 공간으로 찾아가는 홈바디 힐링 서비스와 안심 제휴 샵 상세 가이드."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 안심 제휴 업체 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 코스 안내. 엄선된 홈바디 전문 제휴 매장의 상세 위치, 요금 및 24시간 예약 지원."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 스페셜 테라피 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천. 섬세한 손길의 홈바디 스페셜 코스로 쌓인 피로를 해소하는 검증된 제휴 샵 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 프라이빗 추천점 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문 안내. 철저한 프라이빗 홈바디 관리 시스템과 제휴 샵별 할인 프로모션 확인."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 편안한 휴식 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 리스트. 언제나 편안하게 머무는 곳에서 받는 홈바디 힐링 코스 및 공식 제휴 샵 예약."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 전문점 추천 리스트 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 상세 정보. 꼼꼼한 실력의 홈바디 전문점 제휴 리스트와 코스별 24시 실시간 예약 상담."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 스웨디시 힐링 샵 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 이용 안내. 부드러운 스웨디시와 맞춤 홈바디 테라피를 제공하는 제휴 매장 정보."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 당일 빠른 방문 예약 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 빠른 예약. 원하는 시간에 맞춰 방문하는 홈바디 케어 프로그램과 제휴 샵 상세 프로필."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 릴렉스 전문점 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 안내. 하루의 긴장을 완벽하게 풀어주는 홈바디 릴렉스 프로그램 및 제휴 업체 예약 번호."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 웰니스 테라피 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천. 지친 몸의 균형을 되찾아주는 프리미엄 홈바디 테라피와 제휴 샵의 투명한 가격 공개."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 원스톱 예약 안내 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 통합 가이드. 간편하게 확인하는 홈바디 코스 구성과 믿을 수 있는 5대 제휴 업체 리스트."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 맞춤형 바디 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 상세 안내. 개인 맞춤형 홈바디 케어로 전신의 활력을 더하는 24시간 제휴 샵 소개."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 심야 24시 이용 안내 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 심야 예약. 늦은 밤에도 걱정 없이 부를 수 있는 홈바디 테라피와 공식 제휴 매장 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 힐링 코스 제휴 리스트 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문. 만족도 높은 홈바디 힐링 코스를 보유한 추천 제휴 업체의 코스별 요금표 제공."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 VIP 프라이빗 관리 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 VIP 프로그램. 1:1 맞춤형 홈바디 스웨디시 관리와 안전한 제휴 샵 실시간 전화 연결."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 감성 스웨디시 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천 가이드. 섬세한 감성의 홈바디 스웨디시 케어로 깊은 휴식을 선사하는 제휴점 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 프리미엄 휴식처 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 안내. 내가 있는 바로 그곳이 힐링 공간이 되는 홈바디 전문 케어와 제휴점 예약 정보."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 정성 가득 힐링 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 이용 팁. 세심하고 정성스러운 홈바디 관리와 검증된 제휴 샵의 실시간 할인 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 완벽한 컨디션 회복 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 코스 추천. 뻐근한 몸을 개운하게 풀어주는 홈바디 프로그램과 24시간 제휴 샵 예약 센터."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 전문 테라피 가이드 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 정보. 체계적인 테크닉을 갖춘 홈바디 전문 테라피스트 제휴 업체 리스트 확인."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 홈바디 출장마사지 고품격 방문 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 토탈 가이드. 고품격 홈바디 힐링 서비스와 편리한 24시 실시간 예약 지원 제휴 샵."
+    ),
+
+    # [딥 아로마 출장마사지 스타일 (31~60)]
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 스웨디시 안내 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문 제휴 안내. 딥 아로마 및 스웨디시 힐링 케어, 24시간 실시간 예약 및 추천 코스 확인."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 릴렉싱 케어 추천 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천 매장. 최고급 오일을 사용한 딥 아로마 테라피와 편안한 힐링을 위한 제휴점 가이드."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 프리미엄 제휴점 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문. 깊은 압과 부드러움이 공존하는 딥 아로마 코스로 만나는 24시간 안심 제휴 샵 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 24시간 힐링 안내 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 예약. 늦은 밤 언제든 편안하게 부를 수 있는 딥 아로마 전문 제휴 업체의 상세 코스 정보."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 스페셜 오일 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 샵 리스트. 프리미엄 에센셜 오일로 진행되는 딥 아로마 관리와 코스별 투명한 가격 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 프라이빗 방문 예약 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 예약 가이드. 철저한 프라이빗 환경에서 받는 딥 아로마 전신 케어와 추천 제휴 매장."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 스웨디시 힐링 코스 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 코스 안내. 딥 아로마와 부드러운 스웨디시의 완벽한 조화를 선사하는 공식 제휴점 리스트."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 전신 피로 회복 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문 안내. 뭉친 근육을 부드럽게 이완시키는 딥 아로마 테라피와 24시 제휴 업체 상담."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 엄선 제휴 샵 모음 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 업체 정보. 만족도가 검증된 딥 아로마 전문 제휴 매장의 코스 및 실시간 전화 연결."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 1:1 맞춤 테라피 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 맞춤 상담. 나만을 위한 1:1 맞춤 딥 아로마 코스로 전신 스트레스를 해소하는 제휴점 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 감성 테라피 추천 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천. 기분 좋은 아로마 향과 함께하는 딥 아로마 감성 케어, 제휴 샵 상세 위치와 요금 확인."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 쾌적한 힐링 테라피 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 상세 가이드. 안락한 공간에서 즐기는 딥 아로마 마사지 프로그램과 제휴 샵 빠른 예약."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 릴렉스 전문점 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 리스트. 몸 깊은 곳까지 릴렉스 시켜주는 프리미엄 딥 아로마 관리와 공식 제휴점 예약 지원."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 24시 실시간 안내 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 실시간 예약. 원하는 시간에 바로 이용하는 딥 아로마 테라피와 검증된 제휴 샵 정보."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 힐링 스웨디시 제휴 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 안내. 섬세한 오일 테라피와 스웨디시를 결합한 딥 아로마 프로그램 제휴 업체 리스트."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 최고급 오일 테라피 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 코스 추천. 고품질 아로마 오일로 진행되는 딥 아로마 케어와 안심 제휴 업체의 코스별 가격."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 안심 방문 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 예약. 편안하고 안전하게 즐기는 딥 아로마 방문 케어 서비스와 실시간 제휴 샵 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 프리미엄 바디 힐링 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문점. 전신의 피로를 말끔히 씻어주는 딥 아로마 바디 힐링과 제휴 샵 할인 혜택 확인."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 편안한 휴식 안내 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 가이드. 복잡한 도심 속 편안한 휴식을 약속하는 딥 아로마 케어와 24시간 제휴 샵 예약."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 감각적인 스웨디시 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 제휴 안내. 감각적인 터칭의 딥 아로마 스웨디시 케어로 깊은 힐링을 주는 업체 리스트."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 원스톱 제휴 센터 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 정보. 빠르게 연결되는 딥 아로마 추천 제휴 업체와 24시간 실시간 예약 번호 제공."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 심야 방문 힐링 샵 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 심야 서비스. 야간에도 정성스러운 딥 아로마 테라피를 받을 수 있는 검증 제휴 매장 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 스트레스 해소 케어 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천. 지친 일상의 스트레스를 날려줄 딥 아로마 힐링 코스와 공식 제휴 샵 상세 가이드."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 VIP 감성 힐링 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 VIP 코스 안내. 품격 있는 서비스의 딥 아로마 관리와 믿을 수 있는 5개 공식 제휴점."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 디테일 바디 테라피 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 코스 안내. 세심한 테크닉으로 진행되는 딥 아로마 바디 케어와 24시간 실시간 예약 지원."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 고품격 힐링 스웨디시 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 전문점. 수준 높은 딥 아로마 스웨디시 힐링 케어를 제공하는 지역 제휴 샵 상세 리스트."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 활력 충전 프로그램 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 추천 매장. 피로 누적을 덜어주는 딥 아로마 활력 프로그램과 제휴 매장 실시간 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 나만의 힐링 타임 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 예약. 프라이빗한 공간에서 누리는 딥 아로마 힐링 타임과 검증된 제휴 샵 코스별 요금 안내."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 전문 테라피스트 제휴 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 제휴 안내. 숙련된 테라피스트의 딥 아로마 마사지 프로그램과 편리한 24시 실시간 연결."
+    ),
+    (
+        "{GU_NAME} {DONG_NAME} 딥 아로마 출장마사지 전신 릴렉스 스웨디시 | 골목리스트",
+        "{GU_NAME} {DONG_NAME} 출장마사지 토탈 가이드. 전신을 편안하게 감싸는 딥 아로마 스웨디시 케어와 안심 제휴 샵 예약 안내."
+    )
+]
+
+seo_cycle = itertools.cycle(SEO_VARIATIONS)
 
 regions_data = {
     "seoul": {
@@ -114,7 +364,7 @@ def generate_shop_cards(gu_name, region_name):
         """
     return cards_html
 
-# 템플릿 파일 읽기
+# template.html 읽기
 with open("template.html", "r", encoding="utf-8") as f:
     template_content = f.read()
 
@@ -126,7 +376,7 @@ for city, gu_dict in regions_data.items():
         gu_name = gu_info["name"]
         dongs = gu_info["dongs"]
         
-        # 1. 구(Gu) 허브 페이지 생성 (동 목록 + 제휴샵 카드 포함)
+        # 1. 구(Gu) 허브 페이지 생성
         gu_dir = os.path.join("area", city, gu_code)
         os.makedirs(gu_dir, exist_ok=True)
         gu_file_path = os.path.join(gu_dir, "index.html")
@@ -137,20 +387,27 @@ for city, gu_dict in regions_data.items():
 
         gu_shop_cards_html = generate_shop_cards(gu_name, "전지역")
 
+        gu_title = f"{gu_name} 홈바디·출장마사지 동별 제휴 정보 | 골목리스트"
+        gu_desc = f"{gu_name} 전 지역 출장마사지 및 홈바디 스웨디시 제휴 업체 통합 안내. 동별 추천 샵 정보와 24시 실시간 예약 상담."
+
         gu_html_content = f"""<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="naver-site-verification" content="e077c41bc3896bcecf18407976496548bea3a79c" />
-<title>{gu_name} 스웨디시 홈케어 제휴 정보 | 골목리스트</title>
-<meta name="description" content="{gu_name} 지역 동별 스웨디시 및 홈케어 제휴 업체 안내">
+<title>{gu_title}</title>
+<meta name="description" content="{gu_desc}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://golmokrest.netlify.app/area/{city}/{gu_code}/">
+
 <meta property="og:site_name" content="골목리스트">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{gu_name} 스웨디시 홈케어 제휴 정보 | 골목리스트">
-<meta property="og:description" content="{gu_name} 지역 동별 스웨디시 및 홈케어 제휴 업체 안내">
+<meta property="og:title" content="{gu_title}">
+<meta property="og:description" content="{gu_desc}">
 <meta property="og:url" content="https://golmokrest.netlify.app/area/{city}/{gu_code}/">
+
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
 <style>
 * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; }}
@@ -192,7 +449,7 @@ h1 {{ font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #1d2a27; bo
 
 <div class="content-wrap">
     <nav style="font-size: 13px; color: #666; margin-bottom: 15px;"><a href="/" style="color:#666; text-decoration:none;">홈</a> › <a href="/area/" style="color:#666; text-decoration:none;">지역 전체보기</a> › <b>{gu_name}</b></nav>
-    <h1>{gu_name} 지역 안내 및 동 선택</h1>
+    <h1>{gu_name} 홈바디·출장마사지 동별 안내</h1>
     
     <div class="region-section">
         <h3 style="font-size:15px; margin-bottom:12px; font-weight:700;">📍 {gu_name} 하위 동 선택하기</h3>
@@ -218,7 +475,7 @@ h1 {{ font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #1d2a27; bo
             f.write(gu_html_content)
         total_gu_count += 1
 
-        # 2. 각 동별 상세 페이지 생성
+        # 2. 각 동별 상세 페이지 생성 (60개 패턴 순환 적용)
         for dong_name in dongs:
             dong_dir = os.path.join("area", city, gu_code, dong_name)
             os.makedirs(dong_dir, exist_ok=True)
@@ -226,7 +483,14 @@ h1 {{ font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #1d2a27; bo
             file_path = os.path.join(dong_dir, "index.html")
             shop_cards_html = generate_shop_cards(gu_name, dong_name)
             
-            content = template_content.replace("{GU_NAME}", gu_name)
+            # 60가지 패턴 중 다음 타이틀/디스크립션 세트 선택
+            title_tpl, desc_tpl = next(seo_cycle)
+            page_title = title_tpl.format(GU_NAME=gu_name, DONG_NAME=dong_name)
+            page_desc = desc_tpl.format(GU_NAME=gu_name, DONG_NAME=dong_name)
+
+            content = template_content.replace("{PAGE_TITLE}", page_title)
+            content = content.replace("{PAGE_DESC}", page_desc)
+            content = content.replace("{GU_NAME}", gu_name)
             content = content.replace("{DONG_NAME}", dong_name)
             content = content.replace("{CITY}", city)
             content = content.replace("{GU_CODE}", gu_code)
@@ -237,4 +501,4 @@ h1 {{ font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #1d2a27; bo
                 
             total_dong_count += 1
 
-print(f"총 {total_gu_count}개의 구(Gu) 페이지(동 목록+제휴샵 포함) 및 {total_dong_count}개의 동 페이지 생성 완료!")
+print(f"총 {total_gu_count}개의 구(Gu) 페이지 및 {total_dong_count}개의 동 페이지 생성 완료!")
