@@ -1,6 +1,7 @@
 import os
 
-base_url = "https://golmokrest.netlify.app"
+# 도심휴식 기본 주소로 수정
+base_url = "https://dosim-rest.netlify.app"
 
 # (url, changefreq, priority) 튜플을 담는 리스트
 sitemap_entries = [

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://golmokrest.netlify.app/sitemap.xml
+Sitemap: https://dosim-rest.netlify.app/sitemap.xml
