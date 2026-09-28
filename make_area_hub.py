@@ -11,9 +11,9 @@ all_regions = {
         ("강서구", "seoul", "gangseo"), ("구로구", "seoul", "guro"), ("금천구", "seoul", "geumcheon"), 
         ("영등포구", "seoul", "yeongdeungpo"), ("동작구", "seoul", "dongjak"), ("관악구", "seoul", "gwanak"), 
         ("서초구", "seoul", "seocho"), ("강남구", "seoul", "gangnam"), ("송파구", "seoul", "songpa"), 
-        ("강동구", "seoul", "gangdong")  # 한글 '강동구' 오타를 영문 'gangdong'으로 수정 완료
+        ("강동구", "seoul", "gangdong")
     ],
-  "경기도 (주요 지역 바로가기)": [
+    "경기도 (주요 지역 바로가기)": [
         ("수원 장안", "gyeonggi", "suwon-jangan"), ("수원 권선", "gyeonggi", "suwon-gwonseon"), 
         ("수원 팔달", "gyeonggi", "suwon-paldal"), ("수원 영통", "gyeonggi", "suwon-yeongtong"),
         ("성남 수정", "gyeonggi", "seongnam-sujeong"), ("성남 중원", "gyeonggi", "seongnam-jungwon"), 
@@ -47,9 +47,9 @@ all_regions = {
 # area 폴더 생성
 os.makedirs("area", exist_ok=True)
 
-# 메타 태그 값 정의
-hub_page_title = "수도권 홈바디·출장마사지 지역 전체보기 (서울·경기·인천) | 골목리스트"
-hub_page_desc = "서울, 경기, 인천 전 지역 시·구·동 홈바디 출장마사지 및 딥 아로마 스웨디시 제휴 업체 통합 안내. 24시간 실시간 예약 상담."
+# 메타 태그 값 정의 (도심휴식 + 스팸 단어 배제)
+hub_page_title = "수도권 지역 전체보기 (서울·경기·인천) | 도심휴식"
+hub_page_desc = "서울, 경기, 인천 전 지역 시·구·동 홈바디 테라피 및 딥 아로마 힐링 케어 제휴 정보 통합 안내. 24시간 실시간 예약 상담."
 
 # HTML 내용 구성
 html_content = f"""<!doctype html>
@@ -57,21 +57,21 @@ html_content = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="naver-site-verification" content="e077c41bc3896bcecf18407976496548bea3a79c" />
+<meta name="naver-site-verification" content="새로운_네이버_인증코드" />
 
 <!-- 검색엔진 최적화(SEO) 타이틀 & 디스크립션 -->
 <title>{hub_page_title}</title>
 <meta name="description" content="{hub_page_desc}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://golmokrest.netlify.app/area/">
+<link rel="canonical" href="https://dosim-rest.netlify.app/area/">
 
 <!-- SNS 공유 메타 태그 -->
-<meta property="og:site_name" content="골목리스트">
+<meta property="og:site_name" content="도심휴식">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{hub_page_title}">
 <meta property="og:description" content="{hub_page_desc}">
-<meta property="og:url" content="https://golmokrest.netlify.app/area/">
+<meta property="og:url" content="https://dosim-rest.netlify.app/area/">
 
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
 <style>
@@ -83,17 +83,17 @@ body {{ background-color: #f4f6f8; color: #1d2a27; line-height: 1.5; }}
 .kt-utilbar a {{ color: #fff; text-decoration: none; }}
 .kt-logorow {{ background: #fff; padding: 20px 0; border-bottom: 1px solid #e3e8ee; }}
 .kt-logorow .kt-wrap {{ display: flex; justify-content: space-between; align-items: center; }}
-.kt-logo {{ font-size: 24px; font-weight: 800; color: #c62828; text-decoration: none; }}
-.kt-menubar {{ background: #2c3e50; color: #fff; }}
+.kt-logo {{ font-size: 24px; font-weight: 800; color: #1e3a8a; text-decoration: none; }}
+.kt-menubar {{ background: #1f2937; color: #fff; }}
 .kt-menubar .kt-wrap {{ display: flex; gap: 20px; padding: 12px 15px; }}
 .kt-menubar a {{ color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; }}
 .content-wrap {{ max-width: 1180px; margin: 30px auto; padding: 0 15px; }}
-h1 {{ font-size: 24px; font-weight: 800; margin-bottom: 25px; color: #1d2a27; border-left: 5px solid #c62828; padding-left: 12px; }}
+h1 {{ font-size: 24px; font-weight: 800; margin-bottom: 25px; color: #1d2a27; border-left: 5px solid #1e3a8a; padding-left: 12px; }}
 .region-section {{ background: #fff; border: 1px solid #e3e8ee; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }}
-.region-section h2 {{ font-size: 18px; font-weight: 700; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #f1f3f5; padding-bottom: 8px; }}
+.region-section h2 {{ font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 15px; border-bottom: 2px solid #f1f3f5; padding-bottom: 8px; }}
 .region-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }}
 .region-grid a {{ background: #f8f9fa; border: 1px solid #e3e8ee; padding: 12px 15px; border-radius: 8px; text-align: center; color: #333; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.2s; }}
-.region-grid a:hover {{ background: #c62828; color: #fff; border-color: #c62828; }}
+.region-grid a:hover {{ background: #1e3a8a; color: #fff; border-color: #1e3a8a; }}
 .kt-foot {{ background: #1d2a27; color: #adb5bd; padding: 30px 0; font-size: 13px; margin-top: 50px; text-align: center; }}
 </style>
 </head>
@@ -104,20 +104,20 @@ h1 {{ font-size: 24px; font-weight: 800; margin-bottom: 25px; color: #1d2a27; bo
 </div></div>
 
 <div class="kt-logorow"><div class="kt-wrap">
-    <a class="kt-logo" href="/">골목리스트</a>
-    <div><a href="/partner/" style="background:#c62828; color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:700;">제휴 문의</a></div>
+    <a class="kt-logo" href="/">도심휴식</a>
+    <div><a href="/partner/" style="background:#1e3a8a; color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:700;">제휴 문의</a></div>
 </div></div>
 
 <div class="kt-menubar"><div class="kt-wrap">
     <a href="/area/">지역 찾기</a>
-    <a href="/visit/">출장 홈케어</a>
-    <a href="/story/">골목 매거진</a>
-    <a href="/partner/">입점 문의</a>
+    <a href="/visit/">테라피 코스 안내</a>
+    <a href="/story/">도심 매거진</a>
+    <a href="/partner/">입점 제휴 문의</a>
 </div></div>
 
 <div class="content-wrap">
     <nav style="font-size: 13px; color: #666; margin-bottom: 15px;"><a href="/" style="color:#666; text-decoration:none;">홈</a> › <b>지역 전체보기</b></nav>
-    <h1>수도권 홈바디·출장마사지 지역 전체보기</h1>
+    <h1>수도권 지역 전체보기</h1>
 """
 
 for category, regions in all_regions.items():
@@ -138,7 +138,7 @@ html_content += """
 </div>
 
 <footer class="kt-foot">
-    <p>&copy; 2026 골목리스트 All Rights Reserved.</p>
+    <p>&copy; 2026 도심휴식 All Rights Reserved.</p>
 </footer>
 </body>
 </html>
