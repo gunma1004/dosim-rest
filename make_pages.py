@@ -388,8 +388,8 @@ for city, gu_dict in regions_data.items():
 
         gu_shop_cards_html = generate_shop_cards(gu_name, "전지역")
 
-        gu_title = f"{gu_name} 출장 홈바디 테라피 동별 제휴 정보 | 도심휴식"
-        gu_desc = f"{gu_name} 전 지역 출장 홈바디 케어 및 스웨디시 제휴 업체 통합 안내. 동별 추천 샵 정보와 24시 실시간 예약 상담."
+        gu_title = f"{gu_name} 출장 홈바디 테라피 마사지 제휴 정보 | 도심휴식"
+        gu_desc = f"{gu_name} 전 지역 출장 마사지 케어 및 스웨디시 제휴 업체 통합 안내. 동별 추천 샵 정보와 24시 실시간 예약 상담."
 
         gu_html_content = f"""<!doctype html>
 <html lang="ko">
